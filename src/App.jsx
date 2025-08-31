@@ -10,6 +10,7 @@ import banner from "./components/banner.jpg";
 
 import {
   Calendar,
+  CalendarDays,
   Clock,
   ChevronDown,
   Rocket,
@@ -136,7 +137,7 @@ function Navbar() {
             </a>
           ))}
           <a
-  href="https://forms.gle/RE9YrMDKbsK4VQJd8" 
+  href="https://forms.gle/nZ56KhkQ3cznUVXE7" 
   target="_blank"
   rel="noopener noreferrer"
   className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-4 py-2 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90"
@@ -233,7 +234,7 @@ function Hero() {
                 className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3"
               >
                 <a
-                  href="https://forms.gle/RE9YrMDKbsK4VQJd8"
+                  href="https://forms.gle/nZ56KhkQ3cznUVXE7"
                   target="_blank"
                   className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90 w-full sm:w-auto"
                 >
@@ -354,44 +355,165 @@ This is where innovation meets impact, and your ideas leave a mark on tomorrow."
 
 // import { Calendar, Clock, Flag } from "lucide-react";
 
+
+function ActivitiesTimeline() {
+  const now = new Date();
+
+  const events = useMemo(
+    () => [
+      {
+        title: "Registration & Team Formation",
+        desc: "Participants can register online and form teams (max 3 members).",
+        date: { month: "Sep", day: "01" },
+        timeline: "Monday, Sep 01, 10:00 AM to Sep 14, 11:59 PM",
+        start: new Date("2025-09-01T10:00:00"),
+        end: new Date("2025-09-14T23:59:00"),
+      },
+      {
+        title: "Round-1 Idea Submission(Online)",
+        desc: "Teams submit a proposed AI-driven solution.",
+        date: { month: "Sep", day: "02" },
+        timeline: "Tuesday, Sep 02, 10:00 AM to Sep 14, 11:59 PM",
+        start: new Date("2025-09-02T10:00:00"),
+        end: new Date("2025-09-14T23:59:00"),
+      },
+      {
+        title: "Round-1 Results",
+        desc: "Top 30 teams will be shortlisted for next round",
+        date: { month: "Sep", day: "15" },
+        timeline: "Monday, Sep 15, 07:00 PM",
+        start: new Date("2025-09-15T19:00:00"),
+        end: new Date("2025-09-16T06:00:00"),
+      },
+      {
+        title: "Payment for Round-2",
+        desc: "Shortlisted students need to pay the Rs.699/- fee for Round-2",
+        date: { month: "Sep", day: "16" },
+        timeline: "Tuesday, Sep 16, 06:00 AM to Sep 18, 11:59 PM",
+        start: new Date("2025-09-16T06:00:00"),
+        end: new Date("2025-09-18T23:59:00"),
+      },
+      {
+        title: "Round-2",
+        desc: "Selected 30 teams will compete on the day of HACKATHON at CMR Technical Campus, Hyderabad.",
+        date: { month: "Sep", day: "20" },
+        timeline: "Saturday, Sep 20, 10:00 AM to Sep 21, 10:00 AM",
+        start: new Date("2025-09-20T10:00:00"),
+        end: new Date("2025-09-21T10:00:00"),
+      },
+    ],
+    []
+  );
+
+  // Function to determine label + color dynamically
+  const getStatus = (event) => {
+    if (now < event.start) {
+      return { label: "Upcoming", color: "bg-blue-50 text-blue-500 border border-blue-400" };
+    } else if (now >= event.start && now <= event.end) {
+      return { label: "Ongoing", color: "bg-green-50 text-green-600 border border-green-400" };
+    } else {
+      return { label: "Completed", color: "bg-red-50 text-red-500 border border-red-400" };
+    }
+  };
+
+  return (
+    <section id="activities" className="relative p-5">
+     <div className="mx-auto max-w-7xl px-4">
+        <SectionHeading
+          // eyebrow="Plan your sprint"
+          title="Important Dates"
+          // subtitle="A clear timeline to help you focus and ship."
+        />
+        </div>
+
+      <div className="space-y-0">
+        {events.map((event, i) => {
+          const status = getStatus(event);
+
+          return (
+            <div key={i} className="flex gap-4 relative pb-32">
+              {/* Timeline Line */}
+              {i !== events.length - 1 && (
+                <div className="absolute top-0 bottom-0 left-5 z-0 w-[2px] bg-indigo-500 opacity-50" />
+              )}
+
+              {/* Icon Circle */}
+              <div className="w-10 h-10 bg-indigo-50 relative z-10 rounded-full flex items-center justify-center">
+                <CalendarDays className="w-6 h-6 text-indigo-800" />
+              </div>
+
+              {/* Event Content */}
+              <div className="w-full">
+                <div className="px-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold relative text-gray-800">
+                        {event.title}
+                      </h3>
+                      <p className="text-gray-600 mt-1">{event.desc}</p>
+                    </div>
+
+                    {event.date && (
+                      <div className="w-[60px] my-4 sm:my-0">
+                        <div className="text-center">
+                          <div className="bg-gradient-to-r from-cyan-600 to-emerald-600 rounded-t-lg py-1 text-white">
+                            {event.date.month}
+                          </div>
+                          <div className="border border-t-0 rounded-b-lg px-4 py-2 font-semibold text-xl">
+                            {event.date.day}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Timeline + Status */}
+                  <div className="py-3 border-b border-t mt-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                      <div className="text-gray-600 text-sm">{event.timeline}</div>
+                      <div className="flex-1 lg:text-right">
+                        <div
+                          className={`inline-block px-4 py-2 rounded-3xl select-none pointer-events-none ${status.color}`}
+                        >
+                          {status.label}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function Schedule() {
   const rows = [
-    {
-      day: "Round 1 (Mode - Online)",
-      items: [
-        { time: "01-Sep-2025", title: "Registration Begins" },
-        { time: "02-Sep-2025 to 14-Sep-2025", title: "Proposal Submission" },
-        { time: "15-Sep-2025", title: "Round 1 Results" },
-        { time: "17-Sep-2025", title: "Payment Deadline (INR 699/-)" },
-      ],
-    },
-    {
-      day: "Round 2 (Mode - Offline · 20 & 21 Sep 2025)",
-      items: [
-        { time: "Day-1", title: "" },
-        { time: "09:30", title: "Check-in & Verification" },
-        { time: "10:00", title: "Opening Ceremony" },
-        { time: "14:00", title: "Lunch" },
-        { time: "17:00", title: "Activity & Checkpoints" },
-        { time: "20:00", title: "Dinner" },
-        { time: "Day-2", title: "" },
-        { time: "01:00", title: "Refreshment & Checkpoints" },
-        { time: "06:00", title: "Checkpoints" },
-        { time: "08:00", title: "Breakfast" },
-        { time: "10:00", title: "Project Submission & Judging" },
-        { time: "12:00", title: "Closing Ceremony" },
-      ],
-    },
+    { day: "Day 1", items: [
+      { time: "09:00", title: "Check-in & Verification" },
+      { time: "09:30", title: "Opening Cermony" },
+      { time: "10:00", title: "Hacking Begins" },
+      { time: "14:00", title: "Lunch" },
+      { time: "17:00", title: "Activity & Checkpoint" },
+       { time: "20:00", title: "Dinner" },
+       { time: "23:00", title: "Checkpoint" },
+     
+    ]},
+    { day: "Day 2", items: [
+      { time: "01:00", title: "Refreshment" },
+      { time: "06:00", title: "Checkpoint" },
+      { time: "08:00", title: "Breakfast" },
+      { time: "10:00", title: "Project submission" },
+       { time: "12:00", title: "Awards & Closing Cermony" },
+    ]},
   ];
-
   return (
     <section id="schedule" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
-        <SectionHeading
-          eyebrow="Plan your sprint"
-          title="Event Schedule"
-          subtitle="A clear timeline to help you focus and ship."
-        />
+        <SectionHeading eyebrow="Plan your sprint" title="Event Schedule" subtitle="A clear timeline to help you focus and ship." />
         <div className="grid gap-6 lg:grid-cols-2">
           {rows.map((col, idx) => (
             <motion.div
@@ -402,34 +524,22 @@ function Schedule() {
               transition={{ duration: 0.5 }}
               className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur"
             >
-              {/* Round heading */}
               <div className="mb-4 flex items-center gap-2">
-                <Flag className="h-5 w-5 text-cyan-600" />
+                <Calendar className="h-5 w-5 text-cyan-600" />
                 <h3 className="text-lg font-semibold">{col.day}</h3>
               </div>
-
-              {/* Timeline */}
               <ol className="relative ml-3 border-l border-slate-200">
-                {col.items.map((it, i) => {
-                  // If the entry is "Day-1" or "Day-2", use Calendar icon
-                  const isDay = it.time.toLowerCase().includes("day");
-                  return (
-                    <li key={i} className="mb-6 ml-4">
-                      <div className="absolute -left-[9px] mt-1 h-4 w-4 rounded-full border border-slate-200 bg-white" />
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200">
-                          {isDay ? (
-                            <Calendar className="h-3.5 w-3.5 text-emerald-600" />
-                          ) : (
-                            <Clock className="h-3.5 w-3.5 text-cyan-600" />
-                          )}
-                          {it.time}
-                        </span>
-                        <div className="font-medium">{it.title}</div>
-                      </div>
-                    </li>
-                  );
-                })}
+                {col.items.map((it, i) => (
+                  <li key={i} className="mb-6 ml-4">
+                    <div className="absolute -left-[9px] mt-1 h-4 w-4 rounded-full border border-slate-200 bg-white" />
+                    <div className="flex items-center gap-3">
+<span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200">
+                        <Clock className="h-3.5 w-3.5" /> {it.time}
+                      </span>
+                      <div className="font-medium">{it.title}</div>
+                    </div>
+                  </li>
+                ))}
               </ol>
             </motion.div>
           ))}
@@ -440,6 +550,8 @@ function Schedule() {
 }
 
 
+
+
 function Tracks() {
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -448,7 +560,7 @@ function Tracks() {
       icon: <Sprout className="h-5 w-5" />, 
       title: "AI in Agriculture", 
       desc: "From soil to cloud — AI for better yields.",
-      problem: "Develop an AI-powered solution to predict crop diseases early and optimize irrigation using weather and soil data."
+      problem: "Crop diseases can devastate yields, leading to significant financial losses for farmers. Early detection and timely intervention are crucial for effective management. Description: Develop an AI-driven system that analyzes crop images and environmental data to predict potential disease outbreaks. This system will provide farmers with actionable insights and treatment recommendations to mitigate risks. Expected Solution: A mobile and web-based application that utilizes machine learning algorithms to identify crop diseases and suggest preventive measures and treatments based on real-time data."
     },
     { 
       icon: <GraduationCap className="h-5 w-5" />, 
@@ -514,7 +626,7 @@ function Tracks() {
                   <h3 className="text-base font-bold text-slate-800 mb-2">
                     Problem Statement
                   </h3>
-                  <p className="text-sm text-slate-700 leading-relaxed">
+                  <p className="text-sm text-slate-700 leading-relaxed text-justify">
                     {c.problem}
                   </p>
                 </motion.div>
@@ -592,16 +704,16 @@ function Sponsors() {
       logo: vtlogo, // put logo in public/sponsors folder
       tagline: "Turning Your Ideas into Products!",
     },
-    {
-      name: "Sponsor 2",
-      logo: "/sponsors/techcorp.png",
-      tagline: "tagline",
-    },
-    {
-      name: "Sponsor 3",
-      logo: "/sponsors/innosoft.png",
-      tagline: "tagline",
-    },
+    // {
+    //   name: "Sponsor 2",
+    //   logo: "/sponsors/techcorp.png",
+    //   tagline: "tagline",
+    // },
+    // {
+    //   name: "Sponsor 3",
+    //   logo: "/sponsors/innosoft.png",
+    //   tagline: "tagline",
+    // },
   ];
 
   return (
@@ -609,15 +721,19 @@ function Sponsors() {
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeading
           eyebrow="Backed by the best"
-          title="Sponsors"
+          title="Innovation Partners"
           subtitle="Thanks to our partners for powering innovation."
         />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {sponsors.map((s, i) => (
-            <div
-              key={i}
-              className="group flex flex-col items-center justify-center gap-3 h-40 rounded-2xl border border-slate-200 bg-white/70 backdrop-blur shadow-sm hover:shadow-md transition p-4 text-center"
-            >
+        {/* <div className="grid grid-cols-1 sm:grid-cols-1 gap-6"></div> */}
+       <div className="flex justify-center gap-6">
+
+  {sponsors.map((s, i) => (
+    <div
+      key={i}
+      className="flex flex-col items-center justify-center gap-3 h-40 w-80 
+                 rounded-2xl border border-slate-200 bg-white/70 backdrop-blur 
+                 shadow-sm hover:shadow-md transition p-4 text-center"
+    >
               <img
                 src={s.logo}
                 alt={s.name}
@@ -695,15 +811,15 @@ function Contact() {
               <Phone className="h-4 w-4 text-cyan-600" /> +91 7995760212
             </a>
             <div className="flex items-center gap-4 pt-2">
-              <a
-  href="https://wa.me/7995760212" // <-- replace with your WhatsApp number
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="WhatsApp"
-  className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
->
-  <FaWhatsapp className="h-4 w-4 text-green-600" />
-</a>
+             <a
+    href="https://wa.me/917995760212?text=Hey,%20I%20want%20to%20know%20more%20about%20NuraX%20Hackthon-2025"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="WhatsApp"
+    className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
+  >
+    <FaWhatsapp className="h-4 w-4 text-green-600" />
+  </a>
 
               <a
                 href="https://www.instagram.com/cmrtechnicalcampus?igsh=cWdqMml3aXNldXF1"
@@ -753,6 +869,7 @@ export default function HackathonSite() {
       <main className="pt-4">
         <Hero />
         <About />
+        <ActivitiesTimeline/>
         <Schedule />
         <Tracks />
         <Prizes />
