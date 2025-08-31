@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import logo from "./components/logo.jpg";
+import vtlogo from "./components/vtlogo.png";
+import cmrtclogo from "./components/cmrtclogo.png";
+
 import { UserPlus } from "lucide-react";
 import banner from "./components/banner.png";
 
@@ -89,7 +92,7 @@ function Navbar() {
   const links = [
     { id: "about", label: "About" },
     { id: "schedule", label: "Schedule" },
-    { id: "tracks", label: "Tracks" },
+    { id: "tracks", label: "Themes" },
     { id: "prizes", label: "Prizes" },
     { id: "sponsors", label: "Sponsors" },
     { id: "faq", label: "FAQ" },
@@ -117,6 +120,7 @@ function Navbar() {
         </a>
 
         {/* Navbar Links */}
+        <div className="flex items-center gap-4">
         <nav className="hidden md:flex items-center gap-6 text-sm text-slate-600">
           {links.map((l) => (
             <a
@@ -136,7 +140,18 @@ function Navbar() {
 >
   <UserPlus className="h-4 w-4" /> Register
 </a>
-        </nav>
+</nav>
+<img
+                src={vtlogo}
+                alt="vtLogo"
+                className="h-10 w=10 object-contain rounded"
+              />
+              <img
+                src={cmrtclogo}
+                alt="Logo 2"
+                className="h-12 w-12 object-contain rounded"
+              />
+              </div>
       </div>
     </div>
   </div>
@@ -146,59 +161,99 @@ function Navbar() {
 }
 
 function Hero() {
-  // Set your event date/time here (Asia/Kolkata): Dec 6, 2025 09:00 IST
   const eventDate = useMemo(() => new Date("2025-09-20T09:00:00+05:30"), []);
   const { days, hours, minutes, seconds } = useCountdown(eventDate);
 
   return (
-    // <section id="hero" className="relative overflow-hidden pt-28 md:pt-36">
-    <section id="hero" className="relative overflow-hidden pt-28 md:pt-36 w-full max-w-full">
-
+    <section
+      id="hero"
+      className="relative overflow-hidden pt-28 md:pt-36 w-full"
+    >
       {/* Background blobs */}
-      {/* <div aria-hidden className="pointer-events-none absolute inset-0 -z-10"> */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      >
         <div className="absolute -top-24 -right-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-cyan-400/30 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-emerald-300/30 blur-3xl" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto w-full max-w-7xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          // className="grid items-center gap-8 md:grid-cols-2"
-          className="grid items-center gap-6 sm:gap-8 md:grid-cols-2"
-
+          className="grid gap-8 md:grid-cols-2 items-center"
         >
-          <div>
-            <motion.div variants={container} initial="hidden" animate="show" className="space-y-4">
-              <motion.div variants={item} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur">
-                <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 · Offline · CMRTC
+          {/* Left Section */}
+          <div className="text-center md:text-left space-y-4">
+            <motion.div
+              variants={container}
+              initial="hidden"
+              animate="show"
+              className="space-y-4"
+            >
+              <motion.div
+                variants={item}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur"
+              >
+                <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 ·
+                Offline · CMR Technical Campus
               </motion.div>
-              <motion.h1 variants={item} className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
-                Neura<span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">X </span><span className="text-2xl md:text-4xl font-bold text-slate-700">
-    HACKATHON 2025
-  </span>
+
+              <motion.h1
+                variants={item}
+                className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight tracking-tight break-words"
+              >
+                Neura
+                <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+                  X{" "}
+                </span>
+                <span className="block text-xl sm:text-2xl md:text-4xl font-bold text-slate-700">
+                  HACKATHON 2025
+                </span>
               </motion.h1>
-              <motion.p variants={item} className="text-slate-600 md:text-lg">
-                Build bold solutions for real-world impact in 24 hours. Collaborate, prototype, and pitch your vision in AI, FinTech, HealthTech, Sustainability and more.
+
+              <motion.p
+                variants={item}
+                className="text-slate-600 text-sm sm:text-base md:text-lg"
+              >
+                Your Code. Your Vision. Your Legacy. <br />
+                At NeuraX Hackathon 2025, every line of code is more than just
+                syntax — it’s a step toward shaping the future.
               </motion.p>
-              <motion.div variants={item} className="flex flex-wrap items-center gap-3">
+
+              <motion.div
+                variants={item}
+                className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3"
+              >
                 <a
                   href="https://forms.gle/RE9YrMDKbsK4VQJd8"
                   target="_blank"
-                  className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90"
+                  className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90 w-full sm:w-auto"
                 >
                   Register Now
                 </a>
-                <a href="#about" onClick={(e)=>{e.preventDefault();document.getElementById('about')?.scrollIntoView({behavior:'smooth'});}} className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-5 py-3 font-medium text-slate-700 backdrop-blur hover:bg-white">
-                  Learn more <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                <a
+                  href="#about"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document
+                      .getElementById("about")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-5 py-3 font-medium text-slate-700 backdrop-blur hover:bg-white w-full sm:w-auto justify-center"
+                >
+                  Learn more{" "}
+                  <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
                 </a>
               </motion.div>
 
               {/* Countdown */}
-              <motion.div variants={item} className="mt-2 flex gap-3">
+              <motion.div
+                variants={item}
+                className="mt-4 flex flex-wrap justify-center md:justify-start gap-3"
+              >
                 <Pill value={String(days).padStart(2, "0")} label="Days" />
                 <Pill value={String(hours).padStart(2, "0")} label="Hours" />
                 <Pill value={String(minutes).padStart(2, "0")} label="Minutes" />
@@ -207,12 +262,12 @@ function Hero() {
             </motion.div>
           </div>
 
-          {/* Visual card */}
+          {/* Right Section - Visual Card */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="relative"
+            className="relative mt-8 md:mt-0"
           >
             <div className="relative rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-xl backdrop-blur">
               <div className="flex items-center justify-between">
@@ -220,22 +275,26 @@ function Hero() {
                   <ShieldCheck className="h-6 w-6 text-emerald-600" />
                   <div>
                     <div className="text-sm font-semibold">24h Build Sprint</div>
-                    <div className="text-xs text-slate-500">Team up · Ship fast · Win big</div>
+                    <div className="text-xs text-slate-500">
+                      Code. Create. Conquer.
+                    </div>
                   </div>
                 </div>
                 <Clock className="h-5 w-5 text-cyan-600" />
               </div>
               <div className="mt-6 grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">150+</div>
+                  <div className="text-xl sm:text-2xl font-extrabold">150+</div>
                   <div className="text-xs text-slate-500">Participants</div>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">50+</div>
+                  <div className="text-xl sm:text-2xl font-extrabold">50+</div>
                   <div className="text-xs text-slate-500">Teams</div>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">₹20,000</div>
+                  <div className="text-base sm:text-xl font-extrabold">
+                    Worth ₹20,000+
+                  </div>
                   <div className="text-xs text-slate-500">Prizes</div>
                 </div>
               </div>
@@ -251,7 +310,7 @@ function About() {
   const highlights = [
     { icon: <Lightbulb className="h-5 w-5" />, title: "Innovation", desc: "Explore cutting-edge ideas with mentorship and rapid prototyping." },
     { icon: <Users className="h-5 w-5" />, title: "Collaboration", desc: "Meet talented peers, form teams, and build together." },
-    { icon: <Trophy className="h-5 w-5" />, title: "Prizes", desc: "Win cash, internships, cloud credits, and awesome swags." },
+    { icon: <Trophy className="h-5 w-5" />, title: "Prizes", desc: "Win cash, Internships, Certificates" },
   ];
   return (
     <section id="about" className="relative py-20">
@@ -259,7 +318,8 @@ function About() {
         <SectionHeading
           eyebrow="Why join?"
           title="About the Hackathon"
-          subtitle="HackAI Summit is a 24-hour product-building marathon for students and professionals passionate about solving real-world problems through technology."
+          subtitle="Bring your boldest vision, transform it into reality, and create a legacy that inspires beyond the 24 hours.
+This is where innovation meets impact, and your ideas leave a mark on tomorrow."
         />
         <motion.div
           variants={container}
@@ -289,18 +349,27 @@ function About() {
 
 function Schedule() {
   const rows = [
-    { day: "Day 1", items: [
-      { time: "09:00", title: "Check-in & Breakfast" },
-      { time: "10:00", title: "Opening Keynote & Team Formation" },
-      { time: "12:00", title: "Hacking Begins" },
-      { time: "16:00", title: "Mentor Rounds" },
-      { time: "20:00", title: "Dinner & Checkpoint" },
+    { day: "Round 1(Mode-Online)", items: [
+      { time: "01-Sep-2025", title: "Registration Begins" },
+      { time: "02-Sep-2025 to 14-Sep-2025", title: "Proposal Submission" },
+      // { time: "15-Sep-2025", title: "" },
+      { time: "15-Sep-2025", title: "Round 1 Results" },
+      { time: "17-sep-2025", title: "Payment Deadline(INR 699/-)" },
+      
     ]},
-    { day: "Day 2", items: [
-      { time: "08:00", title: "Breakfast & Final Touches" },
-      { time: "11:00", title: "Project Submission" },
-      { time: "13:00", title: "Demos & Judging" },
-      { time: "16:00", title: "Awards & Closing" },
+    { day: "Round 2(Mode-Offline - 20&21 Sep 2025)", items: [
+      { time: "Day-1", title: "" },
+      { time: "09:30", title: "Checkin & Verification" },
+      { time: "10:00", title: "Opening Cermony" },
+      { time: "14:00", title: "Lunch" },
+      { time: "17:00", title: "Activity & Checkpoints" },
+      { time: "20:00", title: "Dinner" },
+      { time: "Day-2", title: "" },
+      { time: "01:00", title: "Refreshment & Checkpoints" },
+      { time: "06:00", title: "Checkpoints" },
+      { time: "08:00", title: "Breakfast" },
+      { time: "10:00", title: "Project Submission & Judgements" },
+      { time: "12:00", title: "Closing Cermony" },
     ]},
   ];
   return (
@@ -441,10 +510,10 @@ function Sponsors() {
 
 function FAQ() {
   const qa = [
-    { q: "Who can participate?", a: "Students, recent grads, and professionals across all disciplines. Beginners welcome!" },
-    { q: "What is the team size?", a: "1–4 members. You can form teams on Day 1 during the mixer." },
-    { q: "Is there a registration fee?", a: "No—it's free to participate. Seats are limited, so register early." },
-    { q: "Will it be online or offline?", a: "Hybrid. Join online from anywhere or attend the on-site hub in India." },
+    { q: "Who can participate?", a: "Anyone with a passion for Innovation and problem solving" },
+    { q: "What is the team size?", a: "2-3 members.Should be enclosed at the time of registration" },
+    { q: "Is there a registration fee?", a: "Yes. A Nominal fee will be collected after shortlisting" },
+    { q: "Will it be online or offline?", a: "Round 1-online , Round 2 - will be conducted offline at CMR Technical Campus,Hyderabad" },
   ];
   const [open, setOpen] = useState(0);
   return (
@@ -502,7 +571,7 @@ function Contact() {
             <div className="flex items-center gap-4 pt-2">
               <a
                 href="#"
-                aria-label="Twitter"
+                aria-label="Whatsapp"
                 className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
               >
                 <Twitter className="h-4 w-4" />
