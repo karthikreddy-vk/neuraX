@@ -151,7 +151,9 @@ function Hero() {
   const { days, hours, minutes, seconds } = useCountdown(eventDate);
 
   return (
-    <section id="hero" className="relative overflow-hidden pt-28 md:pt-36">
+    // <section id="hero" className="relative overflow-hidden pt-28 md:pt-36">
+    <section id="hero" className="relative overflow-hidden pt-28 md:pt-36 w-full max-w-full">
+
       {/* Background blobs */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-24 -right-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-cyan-400/30 blur-3xl" />
