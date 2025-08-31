@@ -1,33 +1,9 @@
-// import React from "react";
-// import Navbar from "./components/Navbar";
-// import Hero from "./components/Hero";
-// import About from "./components/About";
-// import Schedule from "./components/Schedule";
-// import Tracks from "./components/Tracks";
-// import Prizes from "./components/Prizes";
-// import Sponsors from "./components/Sponsors";
-// import FAQ from "./components/FAQ";
-// import Contact from "./components/Contact";
-// import Footer from "./components/Footer";
-
-// export default function App() {
-//   return (
-//     <div className="font-sans">
-//       <Navbar />
-//       <Hero />
-//       <About />
-//       <Schedule />
-//       <Tracks />
-//       <Prizes />
-//       <Sponsors />
-//       <FAQ />
-//       <Contact />
-//       <Footer />
-//     </div>
-//   );
-// }
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import logo from "./components/logo.jpg";
+import { UserPlus } from "lucide-react";
+import banner from "./components/banner.png";
+
 import {
   Calendar,
   Clock,
@@ -51,7 +27,7 @@ import {
   Leaf,
 } from "lucide-react";
 
-// ---------- Helpers ----------
+
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -108,7 +84,7 @@ function Pill({ value, label }) {
   );
 }
 
-// ---------- Sections ----------
+
 function Navbar() {
   const links = [
     { id: "about", label: "About" },
@@ -126,36 +102,52 @@ function Navbar() {
   };
   return (
     <div className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mt-3 rounded-2xl bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border border-slate-200 shadow-lg">
-          <div className="flex items-center justify-between px-4 py-3">
-            <a href="#hero" className="font-black tracking-tight text-slate-800 text-lg" onClick={(e)=>handleClick(e,'hero')}>
-              Hack<span className="text-cyan-600">AI</span>
+  <div className="mx-auto max-w-7xl px-4">
+    <div className="mt-3 rounded-2xl bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border border-slate-200 shadow-lg">
+      <div className="flex items-center justify-between px-4 py-3">
+        <a
+          href="#hero"
+          className="flex items-center font-black tracking-tight text-slate-800 text-lg gap-2"
+          onClick={(e) => handleClick(e, "hero")}
+        >
+          <img src={logo} alt="NeuraX Logo" className="h-10 w-10 rounded" />
+          <span>
+            Neura<span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">X</span>
+          </span>
+        </a>
+
+        {/* Navbar Links */}
+        <nav className="hidden md:flex items-center gap-6 text-sm text-slate-600">
+          {links.map((l) => (
+            <a
+              key={l.id}
+              href={`#${l.id}`}
+              onClick={(e) => handleClick(e, l.id)}
+              className="hover:text-slate-900 transition-colors"
+            >
+              {l.label}
             </a>
-            <nav className="hidden md:flex items-center gap-6 text-sm text-slate-600">
-              {links.map((l) => (
-                <a key={l.id} href={`#${l.id}`} onClick={(e)=>handleClick(e,l.id)} className="hover:text-slate-900 transition-colors">
-                  {l.label}
-                </a>
-              ))}
-              <a
-                href="#contact"
-                onClick={(e)=>handleClick(e,'contact')}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-4 py-2 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90"
-              >
-                <Mail className="h-4 w-4" /> Contact
-              </a>
-            </nav>
-          </div>
-        </div>
+          ))}
+          <a
+  href="https://forms.gle/RE9YrMDKbsK4VQJd8" 
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-4 py-2 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90"
+>
+  <UserPlus className="h-4 w-4" /> Register
+</a>
+        </nav>
       </div>
     </div>
+  </div>
+</div>
+
   );
 }
 
 function Hero() {
   // Set your event date/time here (Asia/Kolkata): Dec 6, 2025 09:00 IST
-  const eventDate = useMemo(() => new Date("2025-12-06T09:00:00+05:30"), []);
+  const eventDate = useMemo(() => new Date("2025-09-20T09:00:00+05:30"), []);
   const { days, hours, minutes, seconds } = useCountdown(eventDate);
 
   return (
@@ -176,18 +168,20 @@ function Hero() {
           <div>
             <motion.div variants={container} initial="hidden" animate="show" className="space-y-4">
               <motion.div variants={item} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur">
-                <Calendar className="h-4 w-4 text-cyan-600" /> Dec 6–7, 2025 · Hybrid · India
+                <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 · Offline · CMRTC
               </motion.div>
               <motion.h1 variants={item} className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
-                Hack<span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">AI</span> Summit
+                Neura<span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">X </span><span className="text-2xl md:text-4xl font-bold text-slate-700">
+    HACKATHON 2025
+  </span>
               </motion.h1>
               <motion.p variants={item} className="text-slate-600 md:text-lg">
                 Build bold solutions for real-world impact in 24 hours. Collaborate, prototype, and pitch your vision in AI, FinTech, HealthTech, Sustainability and more.
               </motion.p>
               <motion.div variants={item} className="flex flex-wrap items-center gap-3">
                 <a
-                  href="#contact"
-                  onClick={(e)=>{e.preventDefault();document.getElementById('contact')?.scrollIntoView({behavior:'smooth'});}}
+                  href="https://forms.gle/RE9YrMDKbsK4VQJd8"
+                  target="_blank"
                   className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90"
                 >
                   Register Now
@@ -227,15 +221,15 @@ function Hero() {
               </div>
               <div className="mt-6 grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">250+</div>
+                  <div className="text-2xl font-extrabold">150+</div>
                   <div className="text-xs text-slate-500">Participants</div>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">60+</div>
+                  <div className="text-2xl font-extrabold">50+</div>
                   <div className="text-xs text-slate-500">Teams</div>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">₹3L+</div>
+                  <div className="text-2xl font-extrabold">₹</div>
                   <div className="text-xs text-slate-500">Prizes</div>
                 </div>
               </div>
@@ -409,20 +403,28 @@ function Prizes() {
   );
 }
 
+
 function Sponsors() {
   // Placeholder sponsor blocks; replace the SVG/text with real logos
-  const sponsors = Array.from({ length: 8 }).map((_, i) => `Sponsor ${i + 1}`);
+  const sponsors = Array.from({ length: 3 }).map((_, i) => `Sponsor ${i + 1}`);
+
   return (
     <section id="sponsors" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
-        <SectionHeading eyebrow="Backed by the best" title="Sponsors" subtitle="Thanks to our partners for powering innovation." />
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <SectionHeading
+          eyebrow="Backed by the best"
+          title="Sponsors"
+          subtitle="Thanks to our partners for powering innovation."
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {sponsors.map((s, i) => (
             <div
               key={i}
-              className="group flex h-24 items-center justify-center rounded-2xl border border-slate-200 bg-white/70 backdrop-blur shadow-sm hover:shadow-md transition"
+              className="group flex h-40 items-center justify-center rounded-2xl border border-slate-200 bg-white/70 backdrop-blur shadow-sm hover:shadow-md transition"
             >
-              <div className="text-slate-500 group-hover:text-slate-800 select-none font-semibold">{s}</div>
+              <div className="text-slate-500 group-hover:text-slate-800 select-none font-semibold">
+                {s}
+              </div>
             </div>
           ))}
         </div>
@@ -465,63 +467,54 @@ function FAQ() {
 }
 
 function Contact() {
-  const [status, setStatus] = useState("");
-  function onSubmit(e) {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const name = String(fd.get("name") || "").trim();
-    const email = String(fd.get("email") || "").trim();
-    const message = String(fd.get("message") || "").trim();
-    if (!name || !email || !message) {
-      setStatus("Please fill out all fields.");
-      return;
-    }
-    // Simulate success
-    setTimeout(() => setStatus("Thanks! We’ll get back to you soon."), 400);
-    e.currentTarget.reset();
-  }
   return (
     <section id="contact" className="relative py-20">
       <div className="mx-auto max-w-6xl px-4">
-        <SectionHeading eyebrow="Say hello" title="Contact & Registration" subtitle="Register your interest or send us a question." />
-        <div className="grid gap-8 md:grid-cols-2">
-          <form onSubmit={onSubmit} className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur">
-            <div className="grid gap-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Name</label>
-                <input name="name" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 outline-none ring-cyan-500/20 focus:ring-4" placeholder="Your full name" />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
-                <input type="email" name="email" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 outline-none ring-cyan-500/20 focus:ring-4" placeholder="you@example.com" />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Message</label>
-                <textarea name="message" rows={5} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 outline-none ring-cyan-500/20 focus:ring-4" placeholder="Tell us about your team or questions" />
-              </div>
-              <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-2.5 text-white font-semibold shadow hover:shadow-md">
-                <SendIcon className="h-4 w-4" /> Submit
-              </button>
-              {status && <div className="text-sm text-emerald-700">{status}</div>}
-            </div>
-          </form>
+        <SectionHeading
+          eyebrow="Say hello"
+          title="Contact"
+          subtitle="Get in touch with us for any queries or collaborations."
+        />
 
-          <div className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur">
-            <div className="mb-4 text-sm text-slate-600">
-              For partnership & media queries, reach out anytime.
-            </div>
-            <div className="space-y-3 text-sm">
-              <a href="mailto:team@hackai.dev" className="flex items-center gap-3 hover:text-slate-900">
-                <Mail className="h-4 w-4 text-cyan-600" /> team@hackai.dev
+        <div className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur max-w-3xl mx-auto text-center">
+          <div className="mb-4 text-sm text-slate-600">
+            For partnership & media queries, reach out anytime.
+          </div>
+          <div className="flex flex-col items-center justify-center" >
+            <a
+              href="mailto:neurax@cmrtc.ac.in"
+              className="flex items-center gap-3 hover:text-slate-900"
+            >
+              <Mail className="h-4 w-4 text-cyan-600" /> neurax@cmrtc.ac.in
+            </a>
+            <a
+              href="tel:+917995760212"
+              className="flex items-center gap-3 hover:text-slate-900"
+            >
+              <Phone className="h-4 w-4 text-cyan-600" /> +91 7995760212
+            </a>
+            <div className="flex items-center gap-4 pt-2">
+              <a
+                href="#"
+                aria-label="Twitter"
+                className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
+              >
+                <Twitter className="h-4 w-4" />
               </a>
-              <a href="tel:+911234567890" className="flex items-center gap-3 hover:text-slate-900">
-                <Phone className="h-4 w-4 text-cyan-600" /> +91 12345 67890
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
+              >
+                <Instagram className="h-4 w-4" />
               </a>
-              <div className="flex items-center gap-4 pt-2">
-                <a href="#" aria-label="Twitter" className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"><Twitter className="h-4 w-4" /></a>
-                <a href="#" aria-label="Instagram" className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"><Instagram className="h-4 w-4" /></a>
-                <a href="#" aria-label="LinkedIn" className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"><Linkedin className="h-4 w-4" /></a>
-              </div>
+              <a
+                href="#"
+                aria-label="LinkedIn"
+                className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
+              >
+                <Linkedin className="h-4 w-4" />
+              </a>
             </div>
           </div>
         </div>
@@ -530,44 +523,80 @@ function Contact() {
   );
 }
 
+// function Footer() {
+//   return (
+//     <footer  className="relative border-t border-slate-200 bg-cover bg-center"
+     
+//       >
+//       <div className="mx-auto max-w-7xl px-4 py-10">
+//         <div className="grid gap-8 md:grid-cols-3">
+//           <div>
+//             <div className="font-black text-slate-800">Hack<span className="text-cyan-600">AI</span></div>
+//             <p className="mt-2 text-sm text-slate-600">© {new Date().getFullYear()} HackAI Summit. All rights reserved.</p>
+//           </div>
+//           <div className="grid grid-cols-2 gap-2 text-sm">
+//             <a href="#about" className="text-slate-600 hover:text-slate-900">About</a>
+//             <a href="#schedule" className="text-slate-600 hover:text-slate-900">Schedule</a>
+//             <a href="#tracks" className="text-slate-600 hover:text-slate-900">Tracks</a>
+//             <a href="#prizes" className="text-slate-600 hover:text-slate-900">Prizes</a>
+//             <a href="#sponsors" className="text-slate-600 hover:text-slate-900">Sponsors</a>
+//             <a href="#faq" className="text-slate-600 hover:text-slate-900">FAQ</a>
+//           </div>
+//           <div className="text-sm text-slate-600">
+//             <div className="font-semibold text-slate-800">Contact</div>
+//             <div className="mt-1">team@hackai.dev</div>
+//           </div>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// }
+
+// function SendIcon(props){
+//   return (
+//     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={props.className}>
+//       <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//       <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//     </svg>
+//   );
+// }
+
+// export default function HackathonSite() {
+//   // Ensure smooth scroll globally when component mounts
+//   useEffect(() => {
+//     document.documentElement.classList.add("scroll-smooth", "antialiased");
+//   }, []);
+
+//   return (
+//     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,rgba(34,211,238,0.06),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(52,211,153,0.06),transparent_40%)]">
+//       <Navbar />
+//       <main className="pt-4">
+//         <Hero />
+//         <About />
+//         <Schedule />
+//         <Tracks />
+//         <Prizes />
+//         <Sponsors />
+//         <FAQ />
+//         <Contact />
+//       </main>
+//       <Footer />
+//     </div>
+//   );
+// }
 function Footer() {
-  return (
-    <footer className="relative border-t border-slate-200 bg-white/70 backdrop-blur">
-      <div className="mx-auto max-w-7xl px-4 py-10">
-        <div className="grid gap-8 md:grid-cols-3">
-          <div>
-            <div className="font-black text-slate-800">Hack<span className="text-cyan-600">AI</span></div>
-            <p className="mt-2 text-sm text-slate-600">© {new Date().getFullYear()} HackAI Summit. All rights reserved.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <a href="#about" className="text-slate-600 hover:text-slate-900">About</a>
-            <a href="#schedule" className="text-slate-600 hover:text-slate-900">Schedule</a>
-            <a href="#tracks" className="text-slate-600 hover:text-slate-900">Tracks</a>
-            <a href="#prizes" className="text-slate-600 hover:text-slate-900">Prizes</a>
-            <a href="#sponsors" className="text-slate-600 hover:text-slate-900">Sponsors</a>
-            <a href="#faq" className="text-slate-600 hover:text-slate-900">FAQ</a>
-          </div>
-          <div className="text-sm text-slate-600">
-            <div className="font-semibold text-slate-800">Contact</div>
-            <div className="mt-1">team@hackai.dev</div>
-          </div>
-        </div>
-      </div>
+   return (
+    <footer className="relative bg-black">
+      <img 
+        src={banner} 
+        alt="Footer Banner" 
+        className="w-full object-contain max-h-[300px] md:max-h-[400px] mx-auto"
+      />
     </footer>
   );
 }
 
-function SendIcon(props){
-  return (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={props.className}>
-      <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
 export default function HackathonSite() {
-  // Ensure smooth scroll globally when component mounts
   useEffect(() => {
     document.documentElement.classList.add("scroll-smooth", "antialiased");
   }, []);
