@@ -155,7 +155,9 @@ function Hero() {
     <section id="hero" className="relative overflow-hidden pt-28 md:pt-36 w-full max-w-full">
 
       {/* Background blobs */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+      {/* <div aria-hidden className="pointer-events-none absolute inset-0 -z-10"> */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+
         <div className="absolute -top-24 -right-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-cyan-400/30 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-emerald-300/30 blur-3xl" />
       </div>
@@ -165,7 +167,9 @@ function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="grid items-center gap-8 md:grid-cols-2"
+          // className="grid items-center gap-8 md:grid-cols-2"
+          className="grid items-center gap-6 sm:gap-8 md:grid-cols-2"
+
         >
           <div>
             <motion.div variants={container} initial="hidden" animate="show" className="space-y-4">
@@ -231,7 +235,7 @@ function Hero() {
                   <div className="text-xs text-slate-500">Teams</div>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-2xl font-extrabold">₹</div>
+                  <div className="text-2xl font-extrabold">₹20,000</div>
                   <div className="text-xs text-slate-500">Prizes</div>
                 </div>
               </div>
