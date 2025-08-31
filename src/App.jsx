@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState,useRef } from "react";
 import { motion } from "framer-motion";
 import logo from "./components/logo.jpg";
 import vtlogo from "./components/vtlogo.png";
 import cmrtclogo from "./components/cmrtclogo.png";
+import { FaWhatsapp } from "react-icons/fa";
 
-import { UserPlus } from "lucide-react";
-import banner from "./components/banner.png";
+import { GraduationCap, Sprout, UserPlus } from "lucide-react";
+import banner from "./components/banner.jpg";
 
 import {
   Calendar,
@@ -23,11 +24,13 @@ import {
   Mail,
   Phone,
   Instagram,
+  
   Twitter,
   Linkedin,
   Banknote,
   Stethoscope,
   Leaf,
+  MapPin,Circle,Flag,
 } from "lucide-react";
 
 
@@ -198,7 +201,9 @@ function Hero() {
                 className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur"
               >
                 <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 ·
-                Offline · CMR Technical Campus
+                Offline ·<span className="inline-flex items-center gap-1">
+    <MapPin className="h-3.5 w-3.5 text-emerald-600" /> CMR Technical Campus
+  </span>
               </motion.div>
 
               <motion.h1
@@ -347,35 +352,46 @@ This is where innovation meets impact, and your ideas leave a mark on tomorrow."
   );
 }
 
+// import { Calendar, Clock, Flag } from "lucide-react";
+
 function Schedule() {
   const rows = [
-    { day: "Round 1(Mode-Online)", items: [
-      { time: "01-Sep-2025", title: "Registration Begins" },
-      { time: "02-Sep-2025 to 14-Sep-2025", title: "Proposal Submission" },
-      // { time: "15-Sep-2025", title: "" },
-      { time: "15-Sep-2025", title: "Round 1 Results" },
-      { time: "17-sep-2025", title: "Payment Deadline(INR 699/-)" },
-      
-    ]},
-    { day: "Round 2(Mode-Offline - 20&21 Sep 2025)", items: [
-      { time: "Day-1", title: "" },
-      { time: "09:30", title: "Checkin & Verification" },
-      { time: "10:00", title: "Opening Cermony" },
-      { time: "14:00", title: "Lunch" },
-      { time: "17:00", title: "Activity & Checkpoints" },
-      { time: "20:00", title: "Dinner" },
-      { time: "Day-2", title: "" },
-      { time: "01:00", title: "Refreshment & Checkpoints" },
-      { time: "06:00", title: "Checkpoints" },
-      { time: "08:00", title: "Breakfast" },
-      { time: "10:00", title: "Project Submission & Judgements" },
-      { time: "12:00", title: "Closing Cermony" },
-    ]},
+    {
+      day: "Round 1 (Mode - Online)",
+      items: [
+        { time: "01-Sep-2025", title: "Registration Begins" },
+        { time: "02-Sep-2025 to 14-Sep-2025", title: "Proposal Submission" },
+        { time: "15-Sep-2025", title: "Round 1 Results" },
+        { time: "17-Sep-2025", title: "Payment Deadline (INR 699/-)" },
+      ],
+    },
+    {
+      day: "Round 2 (Mode - Offline · 20 & 21 Sep 2025)",
+      items: [
+        { time: "Day-1", title: "" },
+        { time: "09:30", title: "Check-in & Verification" },
+        { time: "10:00", title: "Opening Ceremony" },
+        { time: "14:00", title: "Lunch" },
+        { time: "17:00", title: "Activity & Checkpoints" },
+        { time: "20:00", title: "Dinner" },
+        { time: "Day-2", title: "" },
+        { time: "01:00", title: "Refreshment & Checkpoints" },
+        { time: "06:00", title: "Checkpoints" },
+        { time: "08:00", title: "Breakfast" },
+        { time: "10:00", title: "Project Submission & Judging" },
+        { time: "12:00", title: "Closing Ceremony" },
+      ],
+    },
   ];
+
   return (
     <section id="schedule" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
-        <SectionHeading eyebrow="Plan your sprint" title="Event Schedule" subtitle="A clear timeline to help you focus and ship." />
+        <SectionHeading
+          eyebrow="Plan your sprint"
+          title="Event Schedule"
+          subtitle="A clear timeline to help you focus and ship."
+        />
         <div className="grid gap-6 lg:grid-cols-2">
           {rows.map((col, idx) => (
             <motion.div
@@ -386,22 +402,34 @@ function Schedule() {
               transition={{ duration: 0.5 }}
               className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur"
             >
+              {/* Round heading */}
               <div className="mb-4 flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-cyan-600" />
+                <Flag className="h-5 w-5 text-cyan-600" />
                 <h3 className="text-lg font-semibold">{col.day}</h3>
               </div>
+
+              {/* Timeline */}
               <ol className="relative ml-3 border-l border-slate-200">
-                {col.items.map((it, i) => (
-                  <li key={i} className="mb-6 ml-4">
-                    <div className="absolute -left-[9px] mt-1 h-4 w-4 rounded-full border border-slate-200 bg-white" />
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200">
-                        <Clock className="h-3.5 w-3.5" /> {it.time}
-                      </span>
-                      <div className="font-medium">{it.title}</div>
-                    </div>
-                  </li>
-                ))}
+                {col.items.map((it, i) => {
+                  // If the entry is "Day-1" or "Day-2", use Calendar icon
+                  const isDay = it.time.toLowerCase().includes("day");
+                  return (
+                    <li key={i} className="mb-6 ml-4">
+                      <div className="absolute -left-[9px] mt-1 h-4 w-4 rounded-full border border-slate-200 bg-white" />
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-200">
+                          {isDay ? (
+                            <Calendar className="h-3.5 w-3.5 text-emerald-600" />
+                          ) : (
+                            <Clock className="h-3.5 w-3.5 text-cyan-600" />
+                          )}
+                          {it.time}
+                        </span>
+                        <div className="font-medium">{it.title}</div>
+                      </div>
+                    </li>
+                  );
+                })}
               </ol>
             </motion.div>
           ))}
@@ -411,51 +439,128 @@ function Schedule() {
   );
 }
 
+
 function Tracks() {
+  const [activeIndex, setActiveIndex] = useState(null);
+
   const cards = [
-    { icon: <Cpu className="h-5 w-5" />, title: "AI & ML", desc: "Agents, copilots, vision, NLP, MLOps." },
-    { icon: <Leaf className="h-5 w-5" />, title: "Sustainability", desc: "Climate tech, energy, waste & water." },
-    { icon: <Landmark className="h-5 w-5" />, title: "FinTech", desc: "Payments, fraud, credit, inclusion." },
-    { icon: <HeartPulse className="h-5 w-5" />, title: "HealthTech", desc: "Telehealth, diagnostics, wellness." },
+    { 
+      icon: <Sprout className="h-5 w-5" />, 
+      title: "AI in Agriculture", 
+      desc: "From soil to cloud — AI for better yields.",
+      problem: "Develop an AI-powered solution to predict crop diseases early and optimize irrigation using weather and soil data."
+    },
+    { 
+      icon: <GraduationCap className="h-5 w-5" />, 
+      title: "AI in Education", 
+      desc: "Empowering minds through intelligent learning.",
+      problem: "Design an AI-driven tutor that tracks progress and provides smart recommendations for improved learning outcomes."
+    },
+    { 
+      icon: <HeartPulse className="h-5 w-5" />, 
+      title: "AI in HealthCare", 
+      desc: "AI at the heart of better healthcare.",
+      problem: "Create an AI system to detect anomalies in X-rays/MRIs and assist doctors with faster, more accurate diagnosis."
+    },
   ];
+
+  const handleCardClick = (i) => {
+    setActiveIndex(activeIndex === i ? null : i);
+  };
+
   return (
     <section id="tracks" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
-        <SectionHeading eyebrow="Choose your lane" title="Tracks & Themes" subtitle="Pick a theme or propose your own wild card." />
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
+        <SectionHeading 
+          eyebrow="Choose your lane" 
+          title="Tracks & Themes" 
+          subtitle="Pick a theme or propose your own wild card." 
+        />
+
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-3">
           {cards.map((c, i) => (
-            <motion.div key={i} variants={item} className="group rounded-3xl border border-slate-200 bg-white/80 p-6 backdrop-blur shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-gradient-to-br from-cyan-100 to-emerald-100 p-2 text-cyan-700">{c.icon}</div>
-                <div className="font-semibold">{c.title}</div>
-              </div>
-              <p className="mt-3 text-sm text-slate-600">{c.desc}</p>
-            </motion.div>
+            <div key={i}>
+              {/* Card */}
+              <motion.div 
+                onClick={() => handleCardClick(i)}
+                whileHover={{ scale: 1.03 }}
+                className={`cursor-pointer group rounded-3xl border border-slate-200 bg-white/80 p-6 backdrop-blur shadow-sm transition-shadow hover:shadow-md 
+                  ${activeIndex === i ? "ring-2 ring-cyan-500" : ""}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="rounded-xl bg-gradient-to-br from-cyan-100 to-emerald-100 p-2 text-cyan-700">{c.icon}</div>
+                  <div className="font-semibold">{c.title}</div>
+                </div>
+                <p className="mt-3 text-sm text-slate-600">{c.desc}</p>
+              </motion.div>
+
+              {/* Problem statement (Mobile only) */}
+              {activeIndex === i && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-3 lg:hidden rounded-2xl border border-slate-200 bg-gradient-to-r from-cyan-50 to-emerald-50 shadow-lg p-5 relative"
+                >
+                  {/* Close button */}
+                  <button
+                    onClick={() => setActiveIndex(null)}
+                    className="absolute top-3 right-3 text-slate-500 hover:text-slate-800"
+                  >
+                    ✕
+                  </button>
+
+                  <h3 className="text-base font-bold text-slate-800 mb-2">
+                    Problem Statement
+                  </h3>
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    {c.problem}
+                  </p>
+                </motion.div>
+              )}
+            </div>
           ))}
-        </motion.div>
+        </div>
+
+        {/* Unified problem statement (Desktop only) */}
+        {activeIndex !== null && (
+          <motion.div
+            key={activeIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.4 }}
+            className="mt-8 hidden lg:block rounded-3xl border border-slate-200 bg-gradient-to-r from-cyan-50 to-emerald-50 p-8 shadow-lg"
+          >
+            <h3 className="text-lg font-bold text-slate-800 mb-2">
+              Problem Statement — {cards[activeIndex].title}
+            </h3>
+            <p className="text-slate-700 leading-relaxed">
+              {cards[activeIndex].problem}
+            </p>
+          </motion.div>
+        )}
       </div>
     </section>
   );
 }
 
+
+// export default Tracks;
+
 function Prizes() {
   const prizes = [
-    { icon: <Banknote className="h-6 w-6" />, title: "₹1,50,000", desc: "Grand Prize (Team)" },
-    { icon: <Gift className="h-6 w-6" />, title: "Goodies & Swag", desc: "Tees, stickers, gadgets" },
-    { icon: <ShieldCheck className="h-6 w-6" />, title: "Cloud Credits", desc: "Infra to scale your MVP" },
-    { icon: <Trophy className="h-6 w-6" />, title: "Internships", desc: "Top teams get interview fast-track" },
+    { icon: <Banknote className="h-6 w-6" />, title: "Worth upto ₹20,000+", desc: "Grand Prize (Team)" },
+    // { icon: <Gift className="h-6 w-6" />, title: "Goodies & Swag", desc: "Tees, stickers, gadgets" },
+    { icon: <ShieldCheck className="h-6 w-6" />, title: "Merit Certificates", desc: "For your valuable contribution" },
+    { icon: <Trophy className="h-6 w-6" />, title: "Direct Internship", desc: "With Vishwasri Technologies Pvt.Ltd" },
   ];
   return (
     <section id="prizes" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeading eyebrow="What you can win" title="Prizes & Rewards" subtitle="More than glory—boost your career and product." />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {prizes.map((p, i) => (
             <motion.div
               key={i}
@@ -480,8 +585,24 @@ function Prizes() {
 
 
 function Sponsors() {
-  // Placeholder sponsor blocks; replace the SVG/text with real logos
-  const sponsors = Array.from({ length: 3 }).map((_, i) => `Sponsor ${i + 1}`);
+  // Replace these with real sponsor data
+  const sponsors = [
+    {
+      name: "Vishwasri Technologies",
+      logo: vtlogo, // put logo in public/sponsors folder
+      tagline: "Turning Your Ideas into Products!",
+    },
+    {
+      name: "Sponsor 2",
+      logo: "/sponsors/techcorp.png",
+      tagline: "tagline",
+    },
+    {
+      name: "Sponsor 3",
+      logo: "/sponsors/innosoft.png",
+      tagline: "tagline",
+    },
+  ];
 
   return (
     <section id="sponsors" className="relative py-20">
@@ -495,11 +616,15 @@ function Sponsors() {
           {sponsors.map((s, i) => (
             <div
               key={i}
-              className="group flex h-40 items-center justify-center rounded-2xl border border-slate-200 bg-white/70 backdrop-blur shadow-sm hover:shadow-md transition"
+              className="group flex flex-col items-center justify-center gap-3 h-40 rounded-2xl border border-slate-200 bg-white/70 backdrop-blur shadow-sm hover:shadow-md transition p-4 text-center"
             >
-              <div className="text-slate-500 group-hover:text-slate-800 select-none font-semibold">
-                {s}
-              </div>
+              <img
+                src={s.logo}
+                alt={s.name}
+                className="h-12 w-auto object-contain"
+              />
+              <div className="text-slate-800 font-semibold">{s.name}</div>
+              <div className="text-sm text-slate-500">{s.tagline}</div>
             </div>
           ))}
         </div>
@@ -507,6 +632,7 @@ function Sponsors() {
     </section>
   );
 }
+
 
 function FAQ() {
   const qa = [
@@ -570,21 +696,26 @@ function Contact() {
             </a>
             <div className="flex items-center gap-4 pt-2">
               <a
-                href="#"
-                aria-label="Whatsapp"
-                className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
-              >
-                <Twitter className="h-4 w-4" />
-              </a>
+  href="https://wa.me/7995760212" // <-- replace with your WhatsApp number
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="WhatsApp"
+  className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
+>
+  <FaWhatsapp className="h-4 w-4 text-green-600" />
+</a>
+
               <a
-                href="#"
+                href="https://www.instagram.com/cmrtechnicalcampus?igsh=cWdqMml3aXNldXF1"
+                target="_blank"
                 aria-label="Instagram"
                 className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
               >
                 <Instagram className="h-4 w-4" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/school/cmrtechnicalcampus/"
+                target="_blank"
                 aria-label="LinkedIn"
                 className="rounded-full border border-slate-200 p-2 hover:bg-slate-50"
               >
@@ -598,67 +729,7 @@ function Contact() {
   );
 }
 
-// function Footer() {
-//   return (
-//     <footer  className="relative border-t border-slate-200 bg-cover bg-center"
-     
-//       >
-//       <div className="mx-auto max-w-7xl px-4 py-10">
-//         <div className="grid gap-8 md:grid-cols-3">
-//           <div>
-//             <div className="font-black text-slate-800">Hack<span className="text-cyan-600">AI</span></div>
-//             <p className="mt-2 text-sm text-slate-600">© {new Date().getFullYear()} HackAI Summit. All rights reserved.</p>
-//           </div>
-//           <div className="grid grid-cols-2 gap-2 text-sm">
-//             <a href="#about" className="text-slate-600 hover:text-slate-900">About</a>
-//             <a href="#schedule" className="text-slate-600 hover:text-slate-900">Schedule</a>
-//             <a href="#tracks" className="text-slate-600 hover:text-slate-900">Tracks</a>
-//             <a href="#prizes" className="text-slate-600 hover:text-slate-900">Prizes</a>
-//             <a href="#sponsors" className="text-slate-600 hover:text-slate-900">Sponsors</a>
-//             <a href="#faq" className="text-slate-600 hover:text-slate-900">FAQ</a>
-//           </div>
-//           <div className="text-sm text-slate-600">
-//             <div className="font-semibold text-slate-800">Contact</div>
-//             <div className="mt-1">team@hackai.dev</div>
-//           </div>
-//         </div>
-//       </div>
-//     </footer>
-//   );
-// }
 
-// function SendIcon(props){
-//   return (
-//     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={props.className}>
-//       <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-//       <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-//     </svg>
-//   );
-// }
-
-// export default function HackathonSite() {
-//   // Ensure smooth scroll globally when component mounts
-//   useEffect(() => {
-//     document.documentElement.classList.add("scroll-smooth", "antialiased");
-//   }, []);
-
-//   return (
-//     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,rgba(34,211,238,0.06),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(52,211,153,0.06),transparent_40%)]">
-//       <Navbar />
-//       <main className="pt-4">
-//         <Hero />
-//         <About />
-//         <Schedule />
-//         <Tracks />
-//         <Prizes />
-//         <Sponsors />
-//         <FAQ />
-//         <Contact />
-//       </main>
-//       <Footer />
-//     </div>
-//   );
-// }
 function Footer() {
    return (
     <footer className="relative bg-black">
