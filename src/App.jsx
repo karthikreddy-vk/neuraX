@@ -560,19 +560,40 @@ function Tracks() {
       icon: <Sprout className="h-5 w-5" />, 
       title: "AI in Agriculture", 
       desc: "From soil to cloud — AI for better yields.",
-      problem: "Crop diseases can devastate yields, leading to significant financial losses for farmers. Early detection and timely intervention are crucial for effective management. Description: Develop an AI-driven system that analyzes crop images and environmental data to predict potential disease outbreaks. This system will provide farmers with actionable insights and treatment recommendations to mitigate risks. Expected Solution: A mobile and web-based application that utilizes machine learning algorithms to identify crop diseases and suggest preventive measures and treatments based on real-time data."
+       problem: (
+    <ol className="list-decimal ml-5">
+      <p>Build a mobile application for farmers where they can capture an image of their crop. The AI model should:</p>
+      <li>Detect diseases in the crop.</li>
+      <li>Suggest suitable pesticides.</li>
+      <li>Provide recommendations in both Telugu and English, with an AI voice assistant for better accessibility.</li>
+    </ol>
+  )
     },
     { 
       icon: <GraduationCap className="h-5 w-5" />, 
       title: "AI in Education", 
       desc: "Empowering minds through intelligent learning.",
-      problem: "Design an AI-driven tutor that tracks progress and provides smart recommendations for improved learning outcomes."
+     problem: (
+    <ol className="list-decimal ml-5">
+      <p>Develop an AI-powered smart attendance system:</p>
+      <li>where a single classroom image can be used to automatically mark attendance for all students present.</li>
+      <li>The system should accurately recognize faces, handle multiple students in one frame, and generate attendance reports.</li>
+      
+    </ol>
+  )
     },
     { 
       icon: <HeartPulse className="h-5 w-5" />, 
       title: "AI in HealthCare", 
       desc: "AI at the heart of better healthcare.",
-      problem: "Create an AI system to detect anomalies in X-rays/MRIs and assist doctors with faster, more accurate diagnosis."
+      problem: (
+    <ol className="list-decimal ml-5">
+      <p>Create an AI-based diagnostic system to analyze kidney scan images and:</p>
+      <li>Detect the presence of kidney stones.</li>
+      <li>Identify the size and location of the stone.</li>
+      <li>Generate a detailed report for doctors and patients.</li>
+    </ol>
+  )
     },
   ];
 
