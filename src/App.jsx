@@ -560,40 +560,39 @@ function Tracks() {
       icon: <Sprout className="h-5 w-5" />, 
       title: "AI in Agriculture", 
       desc: "From soil to cloud — AI for better yields.",
-       problem: (
-    <ol className="list-decimal ml-5">
-      <p>Build a mobile application for farmers where they can capture an image of their crop. The AI model should:</p>
-      <li>Detect diseases in the crop.</li>
-      <li>Suggest suitable pesticides.</li>
-      <li>Provide recommendations in both Telugu and English, with an AI voice assistant for better accessibility.</li>
-    </ol>
-  )
+      problem: (
+        <ol className="list-decimal ml-5">
+          <p>Build a mobile application for farmers where they can capture an image of their crop. The AI model should:</p>
+          <li>Detect diseases in the crop.</li>
+          <li>Suggest suitable pesticides.</li>
+          <li>Provide recommendations in both Telugu and English, with an AI voice assistant for better accessibility.</li>
+        </ol>
+      )
     },
     { 
       icon: <GraduationCap className="h-5 w-5" />, 
       title: "AI in Education", 
       desc: "Empowering minds through intelligent learning.",
-     problem: (
-    <ol className="list-decimal ml-5">
-      <p>Develop an AI-powered smart attendance system:</p>
-      <li>where a single classroom image can be used to automatically mark attendance for all students present.</li>
-      <li>The system should accurately recognize faces, handle multiple students in one frame, and generate attendance reports.</li>
-      
-    </ol>
-  )
+      problem: (
+        <ol className="list-decimal ml-5">
+          <p>Develop an AI-powered smart attendance system:</p>
+          <li>where a single classroom image can be used to automatically mark attendance for all students present.</li>
+          <li>The system should accurately recognize faces, handle multiple students in one frame, and generate attendance reports.</li>
+        </ol>
+      )
     },
     { 
       icon: <HeartPulse className="h-5 w-5" />, 
       title: "AI in HealthCare", 
       desc: "AI at the heart of better healthcare.",
       problem: (
-    <ol className="list-decimal ml-5">
-      <p>Create an AI-based diagnostic system to analyze kidney scan images and:</p>
-      <li>Detect the presence of kidney stones.</li>
-      <li>Identify the size and location of the stone.</li>
-      <li>Generate a detailed report for doctors and patients.</li>
-    </ol>
-  )
+        <ol className="list-decimal ml-5">
+          <p>Create an AI-based diagnostic system to analyze kidney scan images and:</p>
+          <li>Detect the presence of kidney stones.</li>
+          <li>Identify the size and location of the stone.</li>
+          <li>Generate a detailed report for doctors and patients.</li>
+        </ol>
+      )
     },
   ];
 
@@ -627,36 +626,34 @@ function Tracks() {
                 <p className="mt-3 text-sm text-slate-600">{c.desc}</p>
               </motion.div>
 
-              {/* Problem statement (Mobile only) */}
-              {activeIndex === i && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-3 lg:hidden rounded-2xl border border-slate-200 bg-gradient-to-r from-cyan-50 to-emerald-50 shadow-lg p-5 relative"
+              {/* Problem statement - always open on mobile */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="mt-3 rounded-2xl border border-slate-200 bg-gradient-to-r from-cyan-50 to-emerald-50 shadow-lg p-5 relative lg:hidden"
+              >
+                {/** Optional close button only if you want mobile to be closable */}
+                {/* <button
+                  onClick={() => setActiveIndex(null)}
+                  className="absolute top-3 right-3 text-slate-500 hover:text-slate-800"
                 >
-                  {/* Close button */}
-                  <button
-                    onClick={() => setActiveIndex(null)}
-                    className="absolute top-3 right-3 text-slate-500 hover:text-slate-800"
-                  >
-                    ✕
-                  </button>
+                  ✕
+                </button> */}
 
-                  <h3 className="text-base font-bold text-slate-800 mb-2">
-                    Problem Statement
-                  </h3>
-                  <p className="text-sm text-slate-700 leading-relaxed text-justify">
-                    {c.problem}
-                  </p>
-                </motion.div>
-              )}
+                <h3 className="text-base font-bold text-slate-800 mb-2">
+                  Problem Statement
+                </h3>
+                <p className="text-sm text-slate-700 leading-relaxed text-justify">
+                  {c.problem}
+                </p>
+              </motion.div>
             </div>
           ))}
         </div>
 
-        {/* Unified problem statement (Desktop only) */}
+        {/* Unified problem statement (Desktop only, click to open) */}
         {activeIndex !== null && (
           <motion.div
             key={activeIndex}
@@ -678,6 +675,7 @@ function Tracks() {
     </section>
   );
 }
+
 
 
 // export default Tracks;
