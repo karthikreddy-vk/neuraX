@@ -561,12 +561,12 @@ function Tracks() {
       title: "AI in Agriculture", 
       desc: "From soil to cloud — AI for better yields.",
       problem: (
-        <ol className="list-decimal ml-5">
+        <ul className="list-disc ml-6 mt-1 space-y-1">
           <p>Build a mobile application for farmers where they can capture an image of their crop. The AI model should:</p>
           <li>Detect diseases in the crop.</li>
           <li>Suggest suitable pesticides.</li>
           <li>Provide recommendations in both Telugu and English, with an AI voice assistant for better accessibility.</li>
-        </ol>
+        </ul>
       )
     },
     { 
@@ -574,11 +574,11 @@ function Tracks() {
       title: "AI in Education", 
       desc: "Empowering minds through intelligent learning.",
       problem: (
-        <ol className="list-decimal ml-5">
+        <ul className="list-disc ml-6 mt-1 space-y-1">
           <p>Develop an AI-powered smart attendance system:</p>
           <li>where a single classroom image can be used to automatically mark attendance for all students present.</li>
           <li>The system should accurately recognize faces, handle multiple students in one frame, and generate attendance reports.</li>
-        </ol>
+        </ul>
       )
     },
     { 
@@ -586,12 +586,12 @@ function Tracks() {
       title: "AI in HealthCare", 
       desc: "AI at the heart of better healthcare.",
       problem: (
-        <ol className="list-decimal ml-5">
+        <ul className="list-disc ml-6 mt-1 space-y-1">
           <p>Create an AI-based diagnostic system to analyze kidney scan images and:</p>
           <li>Detect the presence of kidney stones.</li>
           <li>Identify the size and location of the stone.</li>
           <li>Generate a detailed report for doctors and patients.</li>
-        </ol>
+        </ul>
       )
     },
   ];
@@ -605,7 +605,7 @@ function Tracks() {
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeading 
           eyebrow="Choose your lane" 
-          title="Tracks & Themes" 
+          title="Themes & Problem Statements" 
           subtitle="Pick a theme or propose your own wild card." 
         />
 
