@@ -389,9 +389,9 @@ function ActivitiesTimeline() {
         title: "Payment for Round-2",
         desc: "Shortlisted students need to pay the Rs.699/- fee for Round-2",
         date: { month: "Sep", day: "16" },
-        timeline: "Tuesday, Sep 16, 06:00 AM to Sep 18, 11:59 PM",
+        timeline: "Tuesday, Sep 16, 06:00 AM to Sep 16, 11:59 PM",
         start: new Date("2025-09-16T06:00:00"),
-        end: new Date("2025-09-18T23:59:00"),
+        end: new Date("2025-09-16T23:59:00"),
       },
       {
         title: "Round-2",
