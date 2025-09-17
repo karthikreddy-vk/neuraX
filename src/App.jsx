@@ -745,14 +745,16 @@ function Sponsors() {
           subtitle="Thanks to our partners for powering innovation."
         />
         {/* <div className="grid grid-cols-1 sm:grid-cols-1 gap-6"></div> */}
-       <div className="flex justify-center gap-6">
+       {/* <div className="flex justify-center gap-6"> */}
+       <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-6">
 
   {sponsors.map((s, i) => (
     <div
       key={i}
-      className="flex flex-col items-center justify-center gap-3 h-40 w-80 
-                 rounded-2xl border border-slate-200 bg-white/70 backdrop-blur 
-                 shadow-sm hover:shadow-md transition p-4 text-center"
+      className="flex flex-col items-center justify-center gap-3 h-40 
+                       w-full sm:w-80 
+                       rounded-2xl border border-slate-200 bg-white/70 backdrop-blur 
+                       shadow-sm hover:shadow-md transition p-4 text-center"
     >
               <img
                 src={s.logo}
