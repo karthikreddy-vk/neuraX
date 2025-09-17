@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState,useRef } from "react";
 import { motion } from "framer-motion";
 import logo from "./components/logo.jpg";
 import vtlogo from "./components/vtlogo.png";
+import ruxstarlogo from "./components/ruxstarlogo.png";
 import cmrtclogo from "./components/cmrtclogo.png";
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -723,11 +724,11 @@ function Sponsors() {
       logo: vtlogo, // put logo in public/sponsors folder
       tagline: "Turning Your Ideas into Products!",
     },
-    // {
-    //   name: "Sponsor 2",
-    //   logo: "/sponsors/techcorp.png",
-    //   tagline: "tagline",
-    // },
+    {
+      name: "Ruxstar",
+      logo: ruxstarlogo,
+      tagline: "",
+    },
     // {
     //   name: "Sponsor 3",
     //   logo: "/sponsors/innosoft.png",
