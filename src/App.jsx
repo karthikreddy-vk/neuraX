@@ -6,9 +6,14 @@ import ruxstarlogo from "./components/ruxstarlogo.png";
 import cmrtclogo from "./components/cmrtclogo.png";
 import { FaWhatsapp } from "react-icons/fa";
 
+import { doc, onSnapshot, getDoc, setDoc } from "firebase/firestore";
+import { db } from "./firebase"; // make sure this points to your Firebase config
+// import useCountdown from "../hooks/useCountdown";
+
 import { GraduationCap, Sprout, UserPlus } from "lucide-react";
 import banner from "./components/banner.jpg";
-
+import useWindowSize from "react-use/lib/useWindowSize";
+import Confetti from "react-confetti";
 import {
   Calendar,
   CalendarDays,
@@ -83,11 +88,21 @@ function SectionHeading({ eyebrow, title, subtitle }) {
   );
 }
 
+// function Pill({ value, label }) {
+//   return (
+//     <div className="flex flex-col items-center justify-center rounded-2xl bg-white/80 backdrop-blur border border-slate-200 px-5 py-3 shadow-sm">
+//       <div className="text-3xl md:text-4xl font-extrabold text-slate-800 tabular-nums">{value}</div>
+//       <div className="text-[10px] uppercase tracking-widest text-slate-500">{label}</div>
+//     </div>
+//   );
+// }
 function Pill({ value, label }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl bg-white/80 backdrop-blur border border-slate-200 px-5 py-3 shadow-sm">
-      <div className="text-3xl md:text-4xl font-extrabold text-slate-800 tabular-nums">{value}</div>
-      <div className="text-[10px] uppercase tracking-widest text-slate-500">{label}</div>
+    <div className="flex flex-col items-center justify-center bg-white/90 border border-slate-300 rounded-3xl p-12 md:p-20 shadow-xl">
+      {/* HUGE numbers */}
+      <span className="font-extrabold text-7xl md:text-9xl">{value}</span>
+      {/* Bigger labels */}
+      <span className="mt-4 text-3xl md:text-5xl font-semibold">{label}</span>
     </div>
   );
 }
@@ -165,153 +180,199 @@ function Navbar() {
   );
 }
 
+
+
 function Hero() {
   const eventDate = useMemo(() => new Date("2025-09-20T09:00:00+05:30"), []);
   const { days, hours, minutes, seconds } = useCountdown(eventDate);
 
+  const [sprintStartTime, setSprintStartTime] = useState(null);
+  const [sprintTimeLeft, setSprintTimeLeft] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isLive, setIsLive] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const { width, height } = useWindowSize();
+
+  // Firestore listener
+  useEffect(() => {
+    const docRef = doc(db, "timers", "sprint");
+    const unsub = onSnapshot(docRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setSprintStartTime(snapshot.data().startTime);
+        setIsLive(true);
+      }
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  // Sprint countdown
+  useEffect(() => {
+    if (!sprintStartTime) return;
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const end = sprintStartTime + 24 * 60 * 60 * 1000;
+      const diff = end - now;
+
+      if (diff > 0) {
+        setSprintTimeLeft({
+          hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((diff % (1000 * 60)) / 1000),
+        });
+      } else {
+        setSprintTimeLeft(null);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [sprintStartTime]);
+
+  const startSprint = async () => {
+    const docRef = doc(db, "timers", "sprint");
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) {
+      await setDoc(docRef, { startTime: new Date().getTime() });
+    }
+    setIsLive(true);
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 5000); // 5s confetti
+  };
+
   return (
-    <section
-      id="hero"
-      className="relative overflow-hidden pt-28 md:pt-36 w-full"
-    >
+    <section className="relative overflow-hidden pt-28 md:pt-36 w-full">
+      {/* Confetti */}
+      {showConfetti && (
+        <Confetti width={width} height={height} numberOfPieces={300} gravity={0.4} />
+      )}
+
       {/* Background blobs */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        <div className="absolute -top-24 -right-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-cyan-400/30 blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-emerald-300/30 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-24 -right-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-cyan-400/30 blur-3xl animate-blob" />
+        <div className="absolute -bottom-24 -left-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-emerald-300/30 blur-3xl animate-blob" />
       </div>
 
-      <div className="mx-auto w-full max-w-7xl px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="grid gap-8 md:grid-cols-2 items-center"
-        >
-          {/* Left Section */}
-          <div className="text-center md:text-left space-y-4">
+      <div className="mx-auto w-full max-w-7xl px-4 flex flex-col items-center">
+        {/* LIVE banner */}
+        {isLive && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center mb-8"
+          >
             <motion.div
-              variants={container}
-              initial="hidden"
-              animate="show"
-              className="space-y-4"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 1.2 }}
+              className="bg-emerald-600 text-white px-10 py-8 rounded-3xl shadow-2xl font-extrabold text-4xl md:text-6xl text-center tracking-wider uppercase"
             >
-              <motion.div
-                variants={item}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur"
-              >
-                <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 ·
-                Offline ·<span className="inline-flex items-center gap-1">
-    <MapPin className="h-3.5 w-3.5 text-emerald-600" /> CMR Technical Campus
-  </span>
-              </motion.div>
-
-              <motion.h1
-                variants={item}
-                className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight tracking-tight break-words"
-              >
-                Neura
-                <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
-                  X{" "}
-                </span>
-                <span className="block text-xl sm:text-2xl md:text-4xl font-bold text-slate-700">
-                  HACKATHON 2025
-                </span>
-              </motion.h1>
-
-              <motion.p
-                variants={item}
-                className="text-slate-600 text-sm sm:text-base md:text-lg"
-              >
-                Your Code. Your Vision. Your Legacy. <br />
-                At NeuraX Hackathon 2025, every line of code is more than just
-                syntax — it’s a step toward shaping the future.
-              </motion.p>
-
-              <motion.div
-                variants={item}
-                className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3"
-              >
-                <a
-                  href="https://forms.gle/nZ56KhkQ3cznUVXE7"
-                  target="_blank"
-                  className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md hover:opacity-95 active:opacity-90 w-full sm:w-auto"
-                >
-                  Register Now
-                </a>
-                <a
-                  href="#about"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document
-                      .getElementById("about")
-                      ?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-5 py-3 font-medium text-slate-700 backdrop-blur hover:bg-white w-full sm:w-auto justify-center"
-                >
-                  Learn more{" "}
-                  <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-                </a>
-              </motion.div>
-
-              {/* Countdown */}
-              <motion.div
-                variants={item}
-                className="mt-4 flex flex-wrap justify-center md:justify-start gap-3"
-              >
-                <Pill value={String(days).padStart(2, "0")} label="Days" />
-                <Pill value={String(hours).padStart(2, "0")} label="Hours" />
-                <Pill value={String(minutes).padStart(2, "0")} label="Minutes" />
-                <Pill value={String(seconds).padStart(2, "0")} label="Seconds" />
-              </motion.div>
+              🚀 Hackathon is LIVE!
             </motion.div>
+
+            {/* Timer */}
+           { sprintTimeLeft && (
+  <motion.div
+    initial={{ y: 20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.8, delay: 0.3 }}
+    className="flex justify-center gap-12 mt-8"
+  >
+    <Pill
+      value={String(sprintTimeLeft.hours).padStart(2, "0")}
+      label="Hours"
+      valueClassName="text-[8rem] md:text-[10rem] font-extrabold"
+      labelClassName="text-3xl md:text-4xl"
+    />
+    <Pill
+      value={String(sprintTimeLeft.minutes).padStart(2, "0")}
+      label="Minutes"
+      valueClassName="text-[8rem] md:text-[10rem] font-extrabold"
+      labelClassName="text-3xl md:text-4xl"
+    />
+    <Pill
+      value={String(sprintTimeLeft.seconds).padStart(2, "0")}
+      label="Seconds"
+      valueClassName="text-[8rem] md:text-[10rem] font-extrabold"
+      labelClassName="text-3xl md:text-4xl"
+    />
+  </motion.div>
+)}
+
+
+
+
+          </motion.div>
+        )}
+
+        {/* Start Button - only visible if hackathon is not live */}
+        {!loading && !isLive && (
+          <motion.button
+            onClick={startSprint}
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.05 }}
+            className="px-10 py-5 bg-emerald-600 text-white font-bold rounded-3xl shadow-xl hover:bg-emerald-700 text-2xl md:text-3xl mb-8"
+          >
+            Start Hackathon
+          </motion.button>
+        )}
+
+        {/* Left section under timer */}
+        <div className="text-center space-y-4 max-w-2xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur">
+            <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 · Offline ·{" "}
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="h-3.5 w-3.5 text-emerald-600" /> CMR Technical Campus
+            </span>
           </div>
 
-          {/* Right Section - Visual Card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="relative mt-8 md:mt-0"
-          >
-            <div className="relative rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-xl backdrop-blur">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <ShieldCheck className="h-6 w-6 text-emerald-600" />
-                  <div>
-                    <div className="text-sm font-semibold">24h Build Sprint</div>
-                    <div className="text-xs text-slate-500">
-                      Code. Create. Conquer.
-                    </div>
-                  </div>
-                </div>
-                <Clock className="h-5 w-5 text-cyan-600" />
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-xl sm:text-2xl font-extrabold">150+</div>
-                  <div className="text-xs text-slate-500">Participants</div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-xl sm:text-2xl font-extrabold">50+</div>
-                  <div className="text-xs text-slate-500">Teams</div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-base sm:text-xl font-extrabold">
-                    Worth ₹20,000+
-                  </div>
-                  <div className="text-xs text-slate-500">Prizes</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight break-words">
+            Neura
+            <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">X</span>
+            <span className="block text-xl sm:text-2xl md:text-4xl font-bold text-slate-700">
+              HACKATHON 2025
+            </span>
+          </h1>
+
+          <p className="text-slate-600 text-sm sm:text-base md:text-lg">
+            Your Code. Your Vision. Your Legacy. <br />
+            At NeuraX Hackathon 2025, every line of code is more than just syntax — it’s a step toward shaping the future.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href="https://forms.gle/nZ56KhkQ3cznUVXE7"
+              target="_blank"
+              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md w-full sm:w-auto"
+            >
+              Register Now
+            </a>
+            <a
+              href="#about"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-5 py-3 font-medium text-slate-700 backdrop-blur hover:bg-white w-full sm:w-auto justify-center"
+            >
+              Learn more <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+            </a>
+          </div>
+
+          {/* Hackathon Countdown */}
+          <div className="mt-4 flex flex-wrap justify-center gap-3">
+            <Pill value={String(days).padStart(2, "0")} label="Days" />
+            <Pill value={String(hours).padStart(2, "0")} label="Hours" />
+            <Pill value={String(minutes).padStart(2, "0")} label="Minutes" />
+            <Pill value={String(seconds).padStart(2, "0")} label="Seconds" />
+          </div>
+        </div>
       </div>
     </section>
   );
 }
+
+
+
 
 function About() {
   const highlights = [
