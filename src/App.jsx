@@ -236,7 +236,7 @@ function Hero() {
           setShowConfetti(false);
           // Reset confetti flag in Firestore
           updateDoc(docRef, { confetti: false });
-        }, 5000);
+        }, 15000);
       }
     }
     setLoading(false);
