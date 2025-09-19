@@ -6,7 +6,7 @@ import ruxstarlogo from "./components/ruxstarlogo.png";
 import cmrtclogo from "./components/cmrtclogo.png";
 import { FaWhatsapp } from "react-icons/fa";
 
-import { doc, onSnapshot, getDoc, setDoc } from "firebase/firestore";
+import {  doc, getDoc, setDoc, onSnapshot, updateDoc  } from "firebase/firestore";
 import { db } from "./firebase"; // make sure this points to your Firebase config
 // import useCountdown from "../hooks/useCountdown";
 
@@ -96,13 +96,28 @@ function SectionHeading({ eyebrow, title, subtitle }) {
 //     </div>
 //   );
 // }
+// function Pill({ value, label }) {
+//   return (
+//     <div className="flex flex-col items-center justify-center bg-white/90 border border-slate-300 rounded-3xl p-12 md:p-20 shadow-xl">
+//       {/* HUGE numbers */}
+//       <span className="font-extrabold text-7xl md:text-9xl">{value}</span>
+//       {/* Bigger labels */}
+//       <span className="mt-4 text-3xl md:text-5xl font-semibold">{label}</span>
+//     </div>
+//   );
+// }
 function Pill({ value, label }) {
   return (
-    <div className="flex flex-col items-center justify-center bg-white/90 border border-slate-300 rounded-3xl p-12 md:p-20 shadow-xl">
-      {/* HUGE numbers */}
-      <span className="font-extrabold text-7xl md:text-9xl">{value}</span>
-      {/* Bigger labels */}
-      <span className="mt-4 text-3xl md:text-5xl font-semibold">{label}</span>
+    <div className="flex flex-col items-center justify-center bg-white/90 border border-slate-300 rounded-2xl 
+                    p-4 sm:p-6 md:p-12 lg:p-16 shadow-xl">
+      {/* Responsive numbers */}
+      <span className="font-extrabold text-4xl sm:text-5xl md:text-7xl lg:text-9xl">
+        {value}
+      </span>
+      {/* Responsive labels */}
+      <span className="mt-2 sm:mt-3 md:mt-4 text-base sm:text-lg md:text-3xl lg:text-5xl font-semibold">
+        {label}
+      </span>
     </div>
   );
 }
@@ -195,17 +210,41 @@ function Hero() {
   const { width, height } = useWindowSize();
 
   // Firestore listener
+  // useEffect(() => {
+  //   const docRef = doc(db, "timers", "sprint");
+  //   const unsub = onSnapshot(docRef, (snapshot) => {
+  //     if (snapshot.exists()) {
+  //       setSprintStartTime(snapshot.data().startTime);
+  //       setIsLive(true);
+  //     }
+  //     setLoading(false);
+  //   });
+  //   return () => unsub();
+  // }, []);
   useEffect(() => {
-    const docRef = doc(db, "timers", "sprint");
-    const unsub = onSnapshot(docRef, (snapshot) => {
-      if (snapshot.exists()) {
-        setSprintStartTime(snapshot.data().startTime);
-        setIsLive(true);
+  const docRef = doc(db, "timers", "sprint");
+  const unsub = onSnapshot(docRef, (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      setSprintStartTime(data.startTime);
+      setIsLive(true);
+
+      // Listen for confetti flag
+      if (data.confetti) {
+        setShowConfetti(true);
+        setTimeout(() => {
+          setShowConfetti(false);
+          // Reset confetti flag in Firestore
+          updateDoc(docRef, { confetti: false });
+        }, 5000);
       }
-      setLoading(false);
-    });
-    return () => unsub();
-  }, []);
+    }
+    setLoading(false);
+  });
+
+  return () => unsub();
+}, []);
+
 
   // Sprint countdown
   useEffect(() => {
@@ -228,16 +267,33 @@ function Hero() {
     return () => clearInterval(interval);
   }, [sprintStartTime]);
 
+  // const startSprint = async () => {
+  //   const docRef = doc(db, "timers", "sprint");
+  //   const snapshot = await getDoc(docRef);
+  //   if (!snapshot.exists()) {
+  //     await setDoc(docRef, { startTime: new Date().getTime() });
+  //   }
+  //   setIsLive(true);
+  //   setShowConfetti(true);
+  //   setTimeout(() => setShowConfetti(false), 5000); // 5s confetti
+  // };
   const startSprint = async () => {
-    const docRef = doc(db, "timers", "sprint");
-    const snapshot = await getDoc(docRef);
-    if (!snapshot.exists()) {
-      await setDoc(docRef, { startTime: new Date().getTime() });
-    }
-    setIsLive(true);
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 5000); // 5s confetti
-  };
+  const docRef = doc(db, "timers", "sprint");
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) {
+    await setDoc(docRef, { 
+      startTime: new Date().getTime(),
+      confetti: true
+    });
+  } else {
+    // If already exists, just trigger confetti
+    await updateDoc(docRef, { confetti: true });
+  }
+
+  setIsLive(true);
+};
+
 
   return (
     <section className="relative overflow-hidden pt-28 md:pt-36 w-full">
@@ -270,7 +326,7 @@ function Hero() {
             </motion.div>
 
             {/* Timer */}
-           { sprintTimeLeft && (
+           {/* { sprintTimeLeft && (
   <motion.div
     initial={{ y: 20, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
@@ -296,9 +352,37 @@ function Hero() {
       labelClassName="text-3xl md:text-4xl"
     />
   </motion.div>
+)} */}
+{sprintTimeLeft && (
+  <motion.div
+    initial={{ y: 20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.8, delay: 0.3 }}
+    className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-12 mt-8"
+  >
+    <Pill
+      value={String(sprintTimeLeft.hours).padStart(2, "0")}
+      label="Hours"
+      valueClassName="text-4xl sm:text-6xl md:text-[6rem] lg:text-[8rem] font-extrabold"
+      labelClassName="text-sm sm:text-lg md:text-2xl lg:text-3xl"
+      className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-6 lg:px-10 lg:py-8 rounded-2xl"
+    />
+    <Pill
+      value={String(sprintTimeLeft.minutes).padStart(2, "0")}
+      label="Minutes"
+      valueClassName="text-4xl sm:text-6xl md:text-[6rem] lg:text-[8rem] font-extrabold"
+      labelClassName="text-sm sm:text-lg md:text-2xl lg:text-3xl"
+      className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-6 lg:px-10 lg:py-8 rounded-2xl"
+    />
+    <Pill
+      value={String(sprintTimeLeft.seconds).padStart(2, "0")}
+      label="Seconds"
+      valueClassName="text-4xl sm:text-6xl md:text-[6rem] lg:text-[8rem] font-extrabold"
+      labelClassName="text-sm sm:text-lg md:text-2xl lg:text-3xl"
+      className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-6 lg:px-10 lg:py-8 rounded-2xl"
+    />
+  </motion.div>
 )}
-
-
 
 
           </motion.div>
@@ -457,7 +541,7 @@ function ActivitiesTimeline() {
       },
       {
         title: "Round-2",
-        desc: "Selected 30 teams will compete on the day of HACKATHON at CMR Technical Campus, Hyderabad.",
+        desc: "Selected 45 teams will compete on the day of HACKATHON at CMR Technical Campus, Hyderabad.",
         date: { month: "Sep", day: "20" },
         timeline: "Saturday, Sep 20, 10:00 AM to Sep 21, 10:00 AM",
         start: new Date("2025-09-20T10:00:00"),
