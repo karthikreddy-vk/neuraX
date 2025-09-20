@@ -198,118 +198,20 @@ function Navbar() {
 
 
 function Hero() {
-  const eventDate = useMemo(() => new Date("2025-09-20T09:00:00+05:30"), []);
-  const { days, hours, minutes, seconds } = useCountdown(eventDate);
+  const eventEndTime = useMemo(() => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(10, 0, 0, 0); // 10 AM tomorrow
+    return tomorrow;
+  }, []);
 
-  const [sprintStartTime, setSprintStartTime] = useState(null);
-  const [sprintTimeLeft, setSprintTimeLeft] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isLive, setIsLive] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  const { width, height } = useWindowSize();
-
-  // Firestore listener
-  // useEffect(() => {
-  //   const docRef = doc(db, "timers", "sprint");
-  //   const unsub = onSnapshot(docRef, (snapshot) => {
-  //     if (snapshot.exists()) {
-  //       setSprintStartTime(snapshot.data().startTime);
-  //       setIsLive(true);
-  //     }
-  //     setLoading(false);
-  //   });
-  //   return () => unsub();
-  // }, []);
-  useEffect(() => {
-  const docRef = doc(db, "timers", "sprint");
-  const unsub = onSnapshot(docRef, (snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.data();
-      setSprintStartTime(data.startTime);
-      setIsLive(true);
-
-      // Listen for confetti flag
-      if (data.confetti) {
-        setShowConfetti(true);
-        setTimeout(() => {
-          setShowConfetti(false);
-          // Reset confetti flag in Firestore
-          updateDoc(docRef, { confetti: false });
-        }, 15000);
-      }
-    }
-    setLoading(false);
-  });
-
-  return () => unsub();
-}, []);
-
-
-  // Sprint countdown
-  useEffect(() => {
-    if (!sprintStartTime) return;
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const end = sprintStartTime + 24 * 60 * 60 * 1000;
-      const diff = end - now;
-
-      if (diff > 0) {
-        setSprintTimeLeft({
-          hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((diff % (1000 * 60)) / 1000),
-        });
-      } else {
-        setSprintTimeLeft(null);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [sprintStartTime]);
-
-  // const startSprint = async () => {
-  //   const docRef = doc(db, "timers", "sprint");
-  //   const snapshot = await getDoc(docRef);
-  //   if (!snapshot.exists()) {
-  //     await setDoc(docRef, { startTime: new Date().getTime() });
-  //   }
-  //   setIsLive(true);
-  //   setShowConfetti(true);
-  //   setTimeout(() => setShowConfetti(false), 5000); // 5s confetti
-  // };
-  const startSprint = async () => {
-  const docRef = doc(db, "timers", "sprint");
-  const snapshot = await getDoc(docRef);
-
-  if (!snapshot.exists()) {
-    await setDoc(docRef, { 
-      startTime: new Date().getTime(),
-      confetti: true
-    });
-  } else {
-    // If already exists, just trigger confetti
-    await updateDoc(docRef, { confetti: true });
-  }
-
-  setIsLive(true);
-};
-
+  const { hours, minutes, seconds } = useCountdown(eventEndTime);
+  const isLive = new Date() < eventEndTime;
 
   return (
     <section className="relative overflow-hidden pt-28 md:pt-36 w-full">
-      {/* Confetti */}
-      {showConfetti && (
-        <Confetti width={width} height={height} numberOfPieces={300} gravity={0.4} />
-      )}
-
-      {/* Background blobs */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-24 -right-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-cyan-400/30 blur-3xl animate-blob" />
-        <div className="absolute -bottom-24 -left-24 h-72 w-72 md:h-[26rem] md:w-[26rem] rounded-full bg-emerald-300/30 blur-3xl animate-blob" />
-      </div>
-
       <div className="mx-auto w-full max-w-7xl px-4 flex flex-col items-center">
-        {/* LIVE banner */}
         {isLive && (
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
@@ -317,140 +219,72 @@ function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="flex flex-col items-center mb-8"
           >
+            {/* Live Banner */}
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 1.2 }}
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ repeat: Infinity, repeatType: "loop", duration: 1.5 }}
               className="bg-emerald-600 text-white px-10 py-8 rounded-3xl shadow-2xl font-extrabold text-4xl md:text-6xl text-center tracking-wider uppercase"
             >
               🚀 Hackathon is LIVE!
             </motion.div>
 
-            {/* Timer */}
-           {/* { sprintTimeLeft && (
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.8, delay: 0.3 }}
-    className="flex justify-center gap-12 mt-8"
-  >
-    <Pill
-      value={String(sprintTimeLeft.hours).padStart(2, "0")}
-      label="Hours"
-      valueClassName="text-[8rem] md:text-[10rem] font-extrabold"
-      labelClassName="text-3xl md:text-4xl"
-    />
-    <Pill
-      value={String(sprintTimeLeft.minutes).padStart(2, "0")}
-      label="Minutes"
-      valueClassName="text-[8rem] md:text-[10rem] font-extrabold"
-      labelClassName="text-3xl md:text-4xl"
-    />
-    <Pill
-      value={String(sprintTimeLeft.seconds).padStart(2, "0")}
-      label="Seconds"
-      valueClassName="text-[8rem] md:text-[10rem] font-extrabold"
-      labelClassName="text-3xl md:text-4xl"
-    />
-  </motion.div>
-)} */}
-{sprintTimeLeft && (
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.8, delay: 0.3 }}
-    className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-12 mt-8"
-  >
-    <Pill
-      value={String(sprintTimeLeft.hours).padStart(2, "0")}
-      label="Hours"
-      valueClassName="text-4xl sm:text-6xl md:text-[6rem] lg:text-[8rem] font-extrabold"
-      labelClassName="text-sm sm:text-lg md:text-2xl lg:text-3xl"
-      className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-6 lg:px-10 lg:py-8 rounded-2xl"
-    />
-    <Pill
-      value={String(sprintTimeLeft.minutes).padStart(2, "0")}
-      label="Minutes"
-      valueClassName="text-4xl sm:text-6xl md:text-[6rem] lg:text-[8rem] font-extrabold"
-      labelClassName="text-sm sm:text-lg md:text-2xl lg:text-3xl"
-      className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-6 lg:px-10 lg:py-8 rounded-2xl"
-    />
-    <Pill
-      value={String(sprintTimeLeft.seconds).padStart(2, "0")}
-      label="Seconds"
-      valueClassName="text-4xl sm:text-6xl md:text-[6rem] lg:text-[8rem] font-extrabold"
-      labelClassName="text-sm sm:text-lg md:text-2xl lg:text-3xl"
-      className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-6 lg:px-10 lg:py-8 rounded-2xl"
-    />
-  </motion.div>
-)}
-
-
+            {/* Countdown Pills */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-12 mt-8"
+            >
+              <Pill value={String(hours).padStart(2, "0")} label="Hours" />
+              <Pill value={String(minutes).padStart(2, "0")} label="Minutes" />
+              <Pill value={String(seconds).padStart(2, "0")} label="Seconds" />
+            </motion.div>
           </motion.div>
         )}
-
-        {/* Start Button - only visible if hackathon is not live */}
-        {!loading && !isLive && (
-          <motion.button
-            onClick={startSprint}
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.05 }}
-            className="px-10 py-5 bg-emerald-600 text-white font-bold rounded-3xl shadow-xl hover:bg-emerald-700 text-2xl md:text-3xl mb-8"
-          >
-            Start Hackathon
-          </motion.button>
-        )}
-
-        {/* Left section under timer */}
-        <div className="text-center space-y-4 max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur">
-            <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 · Offline ·{" "}
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5 text-emerald-600" /> CMR Technical Campus
-            </span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight break-words">
-            Neura
-            <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">X</span>
-            <span className="block text-xl sm:text-2xl md:text-4xl font-bold text-slate-700">
-              HACKATHON 2025
-            </span>
-          </h1>
-
-          <p className="text-slate-600 text-sm sm:text-base md:text-lg">
-            Your Code. Your Vision. Your Legacy. <br />
-            At NeuraX Hackathon 2025, every line of code is more than just syntax — it’s a step toward shaping the future.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="https://forms.gle/nZ56KhkQ3cznUVXE7"
-              target="_blank"
-              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md w-full sm:w-auto"
-            >
-              Register Now
-            </a>
-            <a
-              href="#about"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-5 py-3 font-medium text-slate-700 backdrop-blur hover:bg-white w-full sm:w-auto justify-center"
-            >
-              Learn more <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-            </a>
-          </div>
-
-          {/* Hackathon Countdown */}
-          <div className="mt-4 flex flex-wrap justify-center gap-3">
-            <Pill value={String(days).padStart(2, "0")} label="Days" />
-            <Pill value={String(hours).padStart(2, "0")} label="Hours" />
-            <Pill value={String(minutes).padStart(2, "0")} label="Minutes" />
-            <Pill value={String(seconds).padStart(2, "0")} label="Seconds" />
-          </div>
-        </div>
       </div>
+      <div className="mx-auto flex flex-col items-center text-center space-y-4 max-w-2xl">
+  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 backdrop-blur">
+    <Calendar className="h-4 w-4 text-cyan-600" /> Sep 20–21, 2025 · Offline ·{" "}
+    <span className="inline-flex items-center gap-1">
+      <MapPin className="h-3.5 w-3.5 text-emerald-600" /> CMR Technical Campus
+    </span>
+  </div>
+
+  <h1 className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight break-words">
+    Neura
+    <span className="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">X</span>
+    <span className="block text-xl sm:text-2xl md:text-4xl font-bold text-slate-700">
+      HACKATHON 2025
+    </span>
+  </h1>
+
+  <p className="text-slate-600 text-sm sm:text-base md:text-lg">
+    Your Code. Your Vision. Your Legacy. <br />
+    At NeuraX Hackathon 2025, every line of code is more than just syntax — it’s a step toward shaping the future.
+  </p>
+
+  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+    <a
+      href="https://forms.gle/nZ56KhkQ3cznUVXE7"
+      target="_blank"
+      className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-5 py-3 text-white font-semibold shadow hover:shadow-md w-full sm:w-auto"
+    >
+      Register Now
+    </a>
+    <a
+      href="#about"
+      onClick={(e) => {
+        e.preventDefault();
+        document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+      }}
+      className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-5 py-3 font-medium text-slate-700 backdrop-blur hover:bg-white w-full sm:w-auto justify-center"
+    >
+      Learn more <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+    </a>
+  </div>
+</div>
+
+
     </section>
   );
 }
